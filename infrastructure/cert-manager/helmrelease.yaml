@@ -10,12 +10,5 @@ spec:
   interval: 10m
   releaseName: cert-manager
   targetNamespace: cert-manager
-  values:
-    installCRDs: true
-    crds:
-      enable: true
   install:
-    crds: CreateReplace
     createNamespace: true
-  upgrade:
-    crds: CreateReplace
