@@ -4,3 +4,6 @@ resources:
   - crds/cert-manager.crds.yaml
   - helmrepository.yaml
   - helmrelease.yaml
+  - sealed-digitalocean-token-secret.yaml
+  - issuer-letsencrypt-prod.yaml
+  - cert-prod-masterloft-marcel-lambacher-de.yaml
