@@ -14,12 +14,21 @@ spec:
   interval: 10m
   values:
     server:
+      retentionPeriod: 7d
+      persistentVolume:
+        size: 20Gi
       route:
         # -- Enable deployment of HTTPRoute for single component
         enabled: true
         parentRefs:
         - name: traefik-gateway
           namespace: kube-system
+        filters:
+          - type: ExtensionRef
+            extensionRef:
+              group: traefik.io
+              kind: Middleware
+              name: victoria-basic-auth
         # -- Array of hostnames
         hostnames:
         - "victoria.masterloft.marcel-lambacher.de"

@@ -4,5 +4,5 @@ resources:
   - sealed-secrets
   - cert-manager
   - traefik
-  - prometheus
+  # - prometheus
   - victoria
