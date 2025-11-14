@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-backend
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: victoria-logs-single
+      sourceRef:
+        kind: HelmRepository
+        name: victoria
+      version: "0.11.17"
+  interval: 10m
+  values:
+    server:
+      route:
+        # -- Enable deployment of HTTPRoute for single component
+        enabled: true
+        parentRefs:
+        - name: traefik-gateway
+          namespace: kube-system
+        # -- Array of hostnames
+        hostnames:
+        - "victoria.masterloft.marcel-lambacher.de"
+
+  releaseName: victoria-backend
+  targetNamespace: victoria
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
