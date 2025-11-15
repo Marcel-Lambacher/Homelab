@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: z2m
+  namespace: homeassistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: z2m
+  template:
+    metadata:
+      labels:
+        app: z2m
+    spec:
+      containers:
+      - name: z2m
+        image: koenkk/zigbee2mqtt:2.6.3
+        envFrom:
+          - secretRef:
+              name: z2m-mqtt-credentials
+        env:
+          - name: TZ
+            value: Europe/London
+          - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
+            value: "mqtt://mosquitto-service.homeassistant.svc.cluster.local:8883"
+          - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED
+            value: "true"
+        securityContext:
+          privileged: true
+        ports:
+          - containerPort: 8080
+        volumeMounts:
+          - name: z2m-data
+            mountPath: /app/data
+          - name: z2m-udev
+            mountPath: /run/udev
+          - name: ttyacm
+            mountPath: /dev/ttyACM0
+      volumes:
+        - name: z2m-data
+          persistentVolumeClaim:
+            claimName: z2m-data
+        - name: z2m-udev
+          hostPath:
+            path: /run/udev
+        - name: ttyacm
+          hostPath:
+            path: /dev/serial/by-id/usb-ITead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_8ed16b62620cee118f4838d6f49e3369-if00-port0
