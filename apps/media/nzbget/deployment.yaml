@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nzbget
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nzbget
+  template:
+    metadata:
+      labels:
+        app: nzbget
+    spec:
+      containers:
+      - name: nzbget
+        image: linuxserver/nzbget:25.4.20251114
+        ports:
+          - containerPort: 6789
+
+        volumeMounts:
+          - mountPath: /config
+            name: nzbget-pv-config
+          - mountPath: /data
+            name: arr-hostpath
+      restartPolicy: Always
+
+      volumes:
+        - name: nzbget-pv-config
+          persistentVolumeClaim:
+            claimName: nzbget-pv-config
+        - name: arr-hostpath
+          hostPath:
+            path: /mnt/arr-media
+            type: DirectoryOrCreate
