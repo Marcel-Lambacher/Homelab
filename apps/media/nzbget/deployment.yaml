@@ -19,6 +19,11 @@ spec:
         ports:
           - containerPort: 6789
 
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+
         volumeMounts:
           - mountPath: /config
             name: nzbget-pv-config

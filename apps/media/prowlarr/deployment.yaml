@@ -20,7 +20,7 @@ spec:
           - containerPort: 7878
 
         volumeMounts:
-          - mountPath: /9696
+          - mountPath: /config
             name: prowlarr-pv-config
       restartPolicy: Always
 
