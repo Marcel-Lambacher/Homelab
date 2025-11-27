@@ -12,20 +12,33 @@ spec:
     metadata:
       labels:
         app: homeassistant
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/homeassistant: "unconfined"
     spec:
       hostNetwork: true
       containers:
       - name: homeassistant
         image: homeassistant/home-assistant:2025.11.0
+        securityContext:
+          privileged: true
         ports:
           - containerPort: 8123
         resources: {}
+        env:
+          # KRITISCH: Definiert explizit den D-Bus Socket Pfad für Python/Bleak
+          - name: DBUS_SYSTEM_BUS_ADDRESS
+            value: "unix:path=/run/dbus/system_bus_socket"
         volumeMounts:
           - mountPath: /config
             name: homeassistant-pv-config
           - mountPath: /etc/localtime
             name: homeassistant-pv-time
             readOnly: true
+          - name: bt-sys
+            mountPath: /sys/class/bluetooth
+            readOnly: true
+          - name: dbus
+            mountPath: /run/dbus
       restartPolicy: Always
       volumes:
         - name: homeassistant-pv-config
@@ -35,4 +48,12 @@ spec:
           persistentVolumeClaim:
             claimName: homeassistant-pv-time
             readOnly: true
+        - name: bt-sys
+          hostPath:
+            path: /sys/class/bluetooth
+            type: Directory
+        - name: dbus
+          hostPath:
+            path: /run/dbus
+            type: Directory
 status: {}
