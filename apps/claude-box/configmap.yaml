@@ -17,6 +17,9 @@ data:
     fi
   # Dauerdienst (s6): Claude im Remote-Control-Server-Modus, erreichbar über
   # claude.ai/code und die Claude-App. Wartet, bis Claude installiert und angemeldet ist.
+  # --permission-mode auto: ein Klassifikator gibt Werkzeugaufrufe frei und fragt nur bei
+  # riskanten Aktionen nach (wichtig für Agent Teams, deren Rückfragen sonst alle beim
+  # Lead landen). stdout (Statusanzeige) wird verworfen, Fehler (stderr) bleiben im Pod-Log.
   claude-remote-control: |
     #!/bin/bash
     CLAUDE=/config/.local/bin/claude
@@ -27,4 +30,4 @@ data:
     cd /config/projects
     exec s6-setuidgid abc env HOME=/config DISPLAY=:1 \
       PATH=/config/.local/bin:/usr/local/bin:/usr/bin:/bin \
-      "$CLAUDE" remote-control --name claude-box
+      "$CLAUDE" remote-control --name claude-box --permission-mode auto >/dev/null
