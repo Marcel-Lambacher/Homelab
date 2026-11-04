@@ -15,3 +15,16 @@ data:
         chromium nodejs tmux git curl ca-certificates ripgrep
       rm -rf /var/lib/apt/lists/*
     fi
+  # Dauerdienst (s6): Claude im Remote-Control-Server-Modus, erreichbar über
+  # claude.ai/code und die Claude-App. Wartet, bis Claude installiert und angemeldet ist.
+  claude-remote-control: |
+    #!/bin/bash
+    CLAUDE=/config/.local/bin/claude
+    until [ -x "$CLAUDE" ] && [ -s /config/.claude/.credentials.json ]; do
+      sleep 30
+    done
+    mkdir -p /config/projects
+    cd /config/projects
+    exec s6-setuidgid abc env HOME=/config DISPLAY=:1 \
+      PATH=/config/.local/bin:/usr/local/bin:/usr/bin:/bin \
+      "$CLAUDE" remote-control --name claude-box

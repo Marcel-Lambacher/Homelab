@@ -62,6 +62,9 @@ spec:
           - mountPath: /custom-cont-init.d
             name: init
             readOnly: true
+          - mountPath: /custom-services.d
+            name: services
+            readOnly: true
           # Chromium braucht mehr als die 64 MB Standard-shm.
           - mountPath: /dev/shm
             name: shm
@@ -73,6 +76,16 @@ spec:
           configMap:
             name: claude-box-init
             defaultMode: 0755
+            items:
+              - key: 10-install-tools.sh
+                path: 10-install-tools.sh
+        - name: services
+          configMap:
+            name: claude-box-init
+            defaultMode: 0755
+            items:
+              - key: claude-remote-control
+                path: claude-remote-control
         - name: shm
           emptyDir:
             medium: Memory
