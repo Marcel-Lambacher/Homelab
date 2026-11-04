@@ -6,3 +6,4 @@ resources:
   - mosquitto
   - z2m
   - media
+  - claude-box

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claude-box
+  namespace: claude-box
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: claude-box
+  template:
+    metadata:
+      labels:
+        app: claude-box
+    spec:
+      # Kein Kubernetes-API-Token im Container: Claude soll den Cluster nicht sehen.
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+      - name: webtop
+        image: docker.io/linuxserver/webtop:debian-xfce
+        ports:
+          - containerPort: 3001
+        resources:
+          requests:
+            cpu: "1"
+            memory: 2Gi
+          limits:
+            cpu: "6"
+            memory: 12Gi
+        env:
+          - name: PUID
+            value: "1000"
+          - name: PGID
+            value: "1000"
+          - name: TZ
+            value: Europe/Berlin
+          - name: CUSTOM_USER
+            value: claude
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: claude-box-auth
+                key: password
+        volumeMounts:
+          - mountPath: /config
+            name: claude-box-config
+          - mountPath: /custom-cont-init.d
+            name: init
+            readOnly: true
+          # Chromium braucht mehr als die 64 MB Standard-shm.
+          - mountPath: /dev/shm
+            name: shm
+      volumes:
+        - name: claude-box-config
+          persistentVolumeClaim:
+            claimName: claude-box-config
+        - name: init
+          configMap:
+            name: claude-box-init
+            defaultMode: 0755
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
