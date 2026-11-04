@@ -1,0 +1,13 @@
+# Nur intern; Zugriff per kubectl port-forward über SSH-Tunnel.
+apiVersion: v1
+kind: Service
+metadata:
+  name: claude-box
+  namespace: claude-box
+spec:
+  selector:
+    app: claude-box
+  ports:
+  - name: https
+    port: 3001
+    targetPort: 3001

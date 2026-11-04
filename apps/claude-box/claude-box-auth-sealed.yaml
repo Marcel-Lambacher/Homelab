@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: claude-box-auth
+  namespace: claude-box
+spec:
+  encryptedData:
+    password: AgCHjoX94FOXVAYwG+3LePrKMfnD5CG24A5ZYpB3PNtJ9RVCX7R+3TR2ZImFIzmipG9nPdZ97C5A09fQ+MA+ltn69AdvB/5K4MbyHS923AxptsGoVk0cFd4cCXs+5pUD5GxtCty8UrDsSbB+P983iDkex5vL+oj/BTZrtIGSj9pMmrraoFPxuAsqWtPFGq8Z/8ooBNKh+mr6dbcA5WV0h+NQBnESIljYJ7WYyZjZMNK5YxSu/yOfa8e3N7ztR2cJCdf0Chxoo9VB7bS3sgvUBRfs1dwPOENDUAg2V26VQj902Ywl4ReZWyxTbLtI05lfSjQdFuHzj1aPD80sH97XhtqvzeorXWs7VpgVe/UPdB0bu8ExJe7Z8qtP+45O3gJ8Il550KdRA/rN0UiB8E4gGn+Ei0tEoMwajHyAgTEQs3Wguhfxk7dlL2YQfuYpea0o0HXYDOQgst0TCk+JV4bsrpMr2+MMYL9tMnwegAW3+mkdNUFTf2JkVV0pz9KW741M0QvDBsG+JbnbUe6+JPfbOcMwrlbtFTkY/LIKvXTAr2W5KlrPq87mCFRC27Cj30b6gGu9Z6+8vsX+8nYNtHeC5rj9GNKDGV+PR9/Wa42n9BZ7xd6sqtn3gFejAdm18rUSGkpgAgETr+1psdwCXjQK3SB5y8364WLijCrZsIVDGNp7WSvbOIQhgV/+x4yP3tlHlKvyw2r+fFAA3CFkwci9uJT28AThoCHDWkw=
+  template:
+    metadata:
+      name: claude-box-auth
+      namespace: claude-box

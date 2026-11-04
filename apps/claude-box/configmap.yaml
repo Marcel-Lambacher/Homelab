@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: claude-box-init
+  namespace: claude-box
+data:
+  # Wird von Webtop beim Start als root ausgeführt.
+  # nodejs kommt im Image aus NodeSource und enthält npm bereits.
+  10-install-tools.sh: |
+    #!/bin/bash
+    set -e
+    if ! command -v chromium >/dev/null || ! command -v tmux >/dev/null; then
+      apt-get update
+      apt-get install -y --no-install-recommends \
+        chromium nodejs tmux git curl ca-certificates ripgrep
+      rm -rf /var/lib/apt/lists/*
+    fi
