@@ -18,18 +18,30 @@ spec:
       # Kein Kubernetes-API-Token im Container: Claude soll den Cluster nicht sehen.
       automountServiceAccountToken: false
       enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: webtop
         image: docker.io/linuxserver/webtop:debian-xfce
+        securityContext:
+          capabilities:
+            drop:
+              - NET_RAW
+              - MKNOD
+              - AUDIT_WRITE
+              - SETFCAP
+              - SYS_CHROOT
         ports:
           - containerPort: 3001
+        # Kein CPU-Limit: CPU wird bei Engpass nur fair geteilt.
+        # Speicher bleibt begrenzt, sonst trifft der OOM-Killer womöglich Home Assistant.
         resources:
           requests:
             cpu: "1"
-            memory: 2Gi
+            memory: 4Gi
           limits:
-            cpu: "6"
-            memory: 12Gi
+            memory: 16Gi
         env:
           - name: PUID
             value: "1000"

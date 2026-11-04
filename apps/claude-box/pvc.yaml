@@ -5,6 +5,9 @@ metadata:
   namespace: claude-box
   labels:
     app: claude-box
+  annotations:
+    # local-path löscht die Daten mit dem PVC; Flux soll ihn nie automatisch entfernen.
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   accessModes:
     - ReadWriteOnce
