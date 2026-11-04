@@ -15,6 +15,21 @@ data:
         chromium nodejs tmux git curl ca-certificates ripgrep
       rm -rf /var/lib/apt/lists/*
     fi
+    # GitHub CLI aus dem offiziellen Repo (Debian trixie hat nur 2.46).
+    # Fehler hier ergeben nur eine Warnung, damit der Start nicht abbricht.
+    # Mit && verkettet, weil set -e links von || nicht greift.
+    if ! command -v gh >/dev/null; then
+      { install -d -m 755 /etc/apt/keyrings &&
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+          -o /etc/apt/keyrings/githubcli-archive-keyring.gpg &&
+        chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg &&
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+          > /etc/apt/sources.list.d/github-cli.list &&
+        apt-get update &&
+        apt-get install -y --no-install-recommends gh
+      } || echo "WARN: gh-Installation fehlgeschlagen" >&2
+      rm -rf /var/lib/apt/lists/*
+    fi
   # Dauerdienst (s6): Claude im Remote-Control-Server-Modus, erreichbar über
   # claude.ai/code und die Claude-App. Wartet, bis Claude installiert und angemeldet ist.
   # --permission-mode auto: ein Klassifikator gibt Werkzeugaufrufe frei und fragt nur bei
